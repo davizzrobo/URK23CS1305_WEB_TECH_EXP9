@@ -224,4 +224,138 @@ router.get('/verify', auth, async (req, res) => {
   }
 });
 
+// @route   POST /api/request-reset-otp
+// @desc    Request OTP for password reset
+// @access  Public
+router.post('/request-reset-otp', async (req, res) => {
+  try {
+    const { identifier } = req.body;
+
+    // Validate input
+    if (!identifier) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username or email is required'
+      });
+    }
+
+    // Find user by email or username
+    const user = await User.findOne({
+      $or: [
+        { email: identifier.toLowerCase() },
+        { username: identifier }
+      ]
+    });
+
+    if (!user) {
+      // Don't reveal if user exists or not for security
+      return res.status(200).json({
+        success: true,
+        message: 'If an account exists with this identifier, an OTP has been sent'
+      });
+    }
+
+    // Generate OTP
+    const otp = user.generateResetOTP();
+    await user.save();
+
+    // In production, send OTP via SMS/Email
+    // For now, return it in response (development only)
+    console.log(`Reset OTP for ${user.username}: ${otp}`);
+
+    res.status(200).json({
+      success: true,
+      message: 'OTP generated successfully',
+      // REMOVE THIS IN PRODUCTION - Only for development/testing
+      otp: otp,
+      expiresIn: '10 minutes'
+    });
+
+  } catch (error) {
+    console.error('Request reset OTP error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
+// @route   POST /api/reset-password
+// @desc    Reset password using OTP verification
+// @access  Public
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { identifier, otp, new_password, confirm_password } = req.body;
+
+    // Validation
+    if (!identifier || !otp || !new_password || !confirm_password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please provide all required fields (identifier, OTP, passwords)' 
+      });
+    }
+
+    // Check if passwords match
+    if (new_password !== confirm_password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Passwords do not match' 
+      });
+    }
+
+    // Password strength validation
+    if (new_password.length < 6) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Password must be at least 6 characters long' 
+      });
+    }
+
+    // Find user by email or username
+    const user = await User.findOne({
+      $or: [
+        { email: identifier.toLowerCase() },
+        { username: identifier.toLowerCase() }
+      ]
+    });
+
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'User not found with this email/username' 
+      });
+    }
+
+    // Verify OTP
+    const otpVerification = user.verifyResetOTP(otp);
+    
+    if (!otpVerification.valid) {
+      return res.status(400).json({ 
+        success: false, 
+        message: otpVerification.message 
+      });
+    }
+
+    // Update password (will be hashed by pre-save hook)
+    user.password = new_password;
+    
+    // Clear OTP after successful verification
+    user.clearResetOTP();
+    
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successfully! You can now login with your new password.'
+    });
+
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error during password reset' 
+    });
+  }
+});
+
 module.exports = router;

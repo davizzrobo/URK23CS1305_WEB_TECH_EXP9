@@ -31,6 +31,14 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Password is required'],
     minlength: [6, 'Password must be at least 6 characters long']
   },
+  resetOTP: {
+    type: String,
+    default: null
+  },
+  resetOTPExpiry: {
+    type: Date,
+    default: null
+  },
   created_at: {
     type: Date,
     default: Date.now
@@ -59,6 +67,39 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   } catch (error) {
     throw error;
   }
+};
+
+// Method to generate reset OTP
+userSchema.methods.generateResetOTP = function() {
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  this.resetOTP = otp;
+  // OTP expires in 10 minutes
+  this.resetOTPExpiry = new Date(Date.now() + 10 * 60 * 1000);
+  return otp;
+};
+
+// Method to verify reset OTP
+userSchema.methods.verifyResetOTP = function(otp) {
+  if (!this.resetOTP || !this.resetOTPExpiry) {
+    return { valid: false, message: 'No OTP has been generated for this account' };
+  }
+  
+  if (new Date() > this.resetOTPExpiry) {
+    return { valid: false, message: 'OTP has expired. Please request a new one' };
+  }
+  
+  if (this.resetOTP !== otp) {
+    return { valid: false, message: 'Invalid OTP' };
+  }
+  
+  return { valid: true, message: 'OTP verified successfully' };
+};
+
+// Method to clear reset OTP after successful password reset
+userSchema.methods.clearResetOTP = function() {
+  this.resetOTP = null;
+  this.resetOTPExpiry = null;
 };
 
 // Method to get user info without password
