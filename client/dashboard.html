@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Multi-Language News Portal</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            color: white !important;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        
+        .navbar .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+            border-radius: 25px;
+            padding: 8px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar .btn-logout:hover {
+            background: white;
+            color: #667eea;
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+        }
+        
+        .language-selector {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .language-btn {
+            margin: 5px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .language-btn:hover, .language-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .news-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .news-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .news-content {
+            padding: 20px;
+        }
+        
+        .news-category {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .news-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .news-source {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .news-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .btn-read-more {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-read-more:hover {
+            background: #764ba2;
+            color: white;
+        }
+        
+        .filter-section {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .category-filter {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            margin: 5px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .category-filter:hover, .category-filter.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-newspaper"></i> News Portal
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3" id="userGreeting">
+                    <i class="fas fa-user-circle"></i> <span id="userName"></span>
+                </span>
+                <a href="add-news.html" class="btn btn-warning btn-sm me-2">
+                    <i class="fas fa-plus"></i> Add News
+                </a>
+                <button class="btn btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="container">
+            <h2><i class="fas fa-globe"></i> Your Personalized News Dashboard</h2>
+            <p>Stay informed with global news in your preferred language</p>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Language Selector -->
+        <div class="language-selector">
+            <h5><i class="fas fa-language"></i> Select Language</h5>
+            <div class="d-flex flex-wrap mt-3">
+                <button class="language-btn active" data-lang="en" onclick="changeLanguage('en')">
+                    <i class="fas fa-globe-americas"></i> English
+                </button>
+                <button class="language-btn" data-lang="hi" onclick="changeLanguage('hi')">
+                    <i class="fas fa-om"></i> हिन्दी (Hindi)
+                </button>
+                <button class="language-btn" data-lang="ta" onclick="changeLanguage('ta')">
+                    <i class="fas fa-book"></i> தமிழ் (Tamil)
+                </button>
+                <button class="language-btn" data-lang="fr" onclick="changeLanguage('fr')">
+                    <i class="fas fa-flag"></i> Français (French)
+                </button>
+                <button class="language-btn" data-lang="es" onclick="changeLanguage('es')">
+                    <i class="fas fa-flag"></i> Español (Spanish)
+                </button>
+                <button class="language-btn" data-lang="de" onclick="changeLanguage('de')">
+                    <i class="fas fa-flag"></i> Deutsch (German)
+                </button>
+            </div>
+        </div>
+        
+        <!-- Category Filter -->
+        <div class="filter-section">
+            <h6><i class="fas fa-filter"></i> Filter by Category</h6>
+            <div class="d-flex flex-wrap">
+                <button class="category-filter active" onclick="filterCategory('all')">All</button>
+                <button class="category-filter" onclick="filterCategory('technology')">Technology</button>
+                <button class="category-filter" onclick="filterCategory('business')">Business</button>
+                <button class="category-filter" onclick="filterCategory('sports')">Sports</button>
+                <button class="category-filter" onclick="filterCategory('entertainment')">Entertainment</button>
+                <button class="category-filter" onclick="filterCategory('health')">Health</button>
+            </div>
+        </div>
+        
+        <!-- News Feed -->
+        <div class="row" id="newsFeed">
+            <!-- News cards will be dynamically loaded here -->
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const API_URL = window.location.origin;
+        let currentLanguage = 'en';
+        let currentCategory = 'all';
+        
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            if (!token || !user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const userData = JSON.parse(user);
+            document.getElementById('userName').textContent = userData.full_name || userData.username;
+        }
+        
+        // Load news feed
+        async function loadNews() {
+            const newsFeed = document.getElementById('newsFeed');
+            
+            // Show loading
+            newsFeed.innerHTML = `
+                <div class="col-12 text-center p-5">
+                    <i class="fas fa-spinner fa-spin fa-3x text-primary mb-3"></i>
+                    <h4>Loading news...</h4>
+                </div>
+            `;
+            
+            try {
+                // Fetch news from API
+                const params = new URLSearchParams({
+                    language: currentLanguage,
+                    category: currentCategory
+                });
+                
+                const response = await fetch(`${API_URL}/api/news?${params}`);
+                const data = await response.json();
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    const news = data.data;
+                    
+                    newsFeed.innerHTML = news.map(item => `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="news-card">
+                                <img src="${item.image_url}" alt="${item.title}" class="news-image" 
+                                     onerror="this.src='https://source.unsplash.com/800x400/?news'">
+                                <div class="news-content">
+                                    <span class="news-category">${item.category}</span>
+                                    <h5 class="news-title">${item.title}</h5>
+                                    <p class="news-source">
+                                        <i class="fas fa-newspaper"></i> ${item.source}
+                                    </p>
+                                    <p class="news-description">${item.description}</p>
+                                    <a href="${item.article_url}" class="btn-read-more" target="_blank">
+                                        Read More <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    // No news found
+                    newsFeed.innerHTML = `
+                        <div class="col-12 text-center p-5">
+                            <i class="fas fa-newspaper fa-4x text-muted mb-3"></i>
+                            <h4>No news available</h4>
+                            <p class="text-muted">No news articles found for this language and category.</p>
+                            <a href="add-news.html" class="btn btn-primary mt-3">
+                                <i class="fas fa-plus"></i> Add First News Article
+                            </a>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error loading news:', error);
+                newsFeed.innerHTML = `
+                    <div class="col-12 text-center p-5">
+                        <i class="fas fa-exclamation-triangle fa-4x text-danger mb-3"></i>
+                        <h4>Error Loading News</h4>
+                        <p class="text-muted">Failed to fetch news articles. Please try again later.</p>
+                        <button class="btn btn-primary mt-3" onclick="loadNews()">
+                            <i class="fas fa-redo"></i> Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Change language
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update active button
+            document.querySelectorAll('.language-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            loadNews();
+        }
+        
+        // Filter by category
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // Update active button
+            document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            loadNews();
+        }
+        
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Initialize
+        checkAuth();
+        loadNews();
+    </script>
+</body>
+</html>

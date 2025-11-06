@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add News - Admin Panel</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            color: white !important;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin-top: 30px;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border: none;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 40px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .alert {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-newspaper"></i> News Portal - Admin
+            </a>
+            <div class="d-flex">
+                <a href="dashboard.html" class="btn btn-light btn-sm me-2">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0"><i class="fas fa-plus-circle"></i> Add New News Article</h3>
+            </div>
+            <div class="card-body p-4">
+                <div id="alertMessage" class="alert" style="display: none;"></div>
+                
+                <form id="newsForm">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">
+                                    <i class="fas fa-heading"></i> News Title *
+                                </label>
+                                <input type="text" class="form-control" id="title" 
+                                       placeholder="Enter news headline" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="language" class="form-label">
+                                    <i class="fas fa-language"></i> Language *
+                                </label>
+                                <select class="form-select" id="language" required>
+                                    <option value="en">English</option>
+                                    <option value="hi">Hindi (हिन्दी)</option>
+                                    <option value="ta">Tamil (தமிழ்)</option>
+                                    <option value="fr">French (Français)</option>
+                                    <option value="es">Spanish (Español)</option>
+                                    <option value="de">German (Deutsch)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="source" class="form-label">
+                                    <i class="fas fa-newspaper"></i> Source *
+                                </label>
+                                <input type="text" class="form-control" id="source" 
+                                       placeholder="e.g., BBC News, CNN" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="author" class="form-label">
+                                    <i class="fas fa-user-edit"></i> Author
+                                </label>
+                                <input type="text" class="form-control" id="author" 
+                                       placeholder="Author name (optional)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="category" class="form-label">
+                                    <i class="fas fa-folder"></i> Category *
+                                </label>
+                                <select class="form-select" id="category" required>
+                                    <option value="">-- Select Category --</option>
+                                    <option value="technology">Technology</option>
+                                    <option value="business">Business</option>
+                                    <option value="sports">Sports</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="health">Health</option>
+                                    <option value="politics">Politics</option>
+                                    <option value="science">Science</option>
+                                    <option value="world">World</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="published_date" class="form-label">
+                                    <i class="fas fa-calendar"></i> Published Date
+                                </label>
+                                <input type="datetime-local" class="form-control" id="published_date">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-align-left"></i> Short Description *
+                        </label>
+                        <textarea class="form-control" id="description" rows="2" 
+                                  placeholder="Brief summary of the news (1-2 sentences)" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="content" class="form-label">
+                            <i class="fas fa-file-alt"></i> Full Content *
+                        </label>
+                        <textarea class="form-control" id="content" rows="5" 
+                                  placeholder="Enter the complete news article content" required></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="image_url" class="form-label">
+                                    <i class="fas fa-image"></i> Image URL
+                                </label>
+                                <input type="url" class="form-control" id="image_url" 
+                                       placeholder="https://example.com/image.jpg">
+                                <small class="text-muted">Leave empty for default image</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="article_url" class="form-label">
+                                    <i class="fas fa-link"></i> Article URL
+                                </label>
+                                <input type="url" class="form-control" id="article_url" 
+                                       placeholder="https://example.com/article">
+                                <small class="text-muted">External link to full article</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Reset Form
+                        </button>
+                        <button type="submit" class="btn btn-submit" id="submitBtn">
+                            <i class="fas fa-paper-plane"></i> Publish News
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3 mb-5">
+            <p class="text-muted">
+                <i class="fas fa-info-circle"></i> Fields marked with * are required
+            </p>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const API_URL = window.location.origin;
+        
+        // Check authentication
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Please login first to access the admin panel');
+            window.location.href = 'login.html';
+        }
+        
+        // Set current date/time as default
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('published_date').value = now.toISOString().slice(0, 16);
+        
+        // Form submission
+        document.getElementById('newsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('title').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                content: document.getElementById('content').value.trim(),
+                source: document.getElementById('source').value.trim(),
+                author: document.getElementById('author').value.trim() || 'Unknown',
+                category: document.getElementById('category').value,
+                language: document.getElementById('language').value,
+                image_url: document.getElementById('image_url').value.trim(),
+                article_url: document.getElementById('article_url').value.trim(),
+                published_date: document.getElementById('published_date').value
+            };
+            
+            // Validation
+            if (!formData.title || !formData.description || !formData.content || 
+                !formData.source || !formData.category) {
+                showAlert('Please fill in all required fields', 'danger');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publishing...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/news`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('News article published successfully!', 'success');
+                    document.getElementById('newsForm').reset();
+                    
+                    // Reset date to current
+                    const now = new Date();
+                    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                    document.getElementById('published_date').value = now.toISOString().slice(0, 16);
+                    
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    showAlert(data.message || 'Failed to publish news', 'danger');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Server error! Please try again.', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publish News';
+            }
+        });
+        
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
